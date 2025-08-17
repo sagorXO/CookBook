@@ -38,49 +38,43 @@
     </header>
 
     <main class="container my-5">
-        <!-- REFINEMENT: Redesigned two-column layout -->
         <div class="row g-5">
-            <!-- Left Column: Your Ingredients -->
-            <div class="col-lg-6">
-                <section class="p-4 rounded-3 sticky-top" style="background-color: var(--card-background); box-shadow: var(--shadow); top: 90px;">
+            <div class="col-lg-8">
+                <section class="p-4 rounded-3" style="background-color: var(--card-background); box-shadow: var(--shadow);">
                     <h3 class="mb-3 text-center">Your Ingredients</h3>
                     <form id="add-ingredient-form" class="d-flex align-items-center mb-3">
                         <label for="ingredient-input" class="visually-hidden">Add an ingredient</label>
                         <input id="ingredient-input" type="text" class="form-control form-control-lg me-2" placeholder="e.g., Chicken...">
                         <button type="submit" class="btn btn-primary btn-lg">Add</button>
                     </form>
-                    <div id="selected-ingredients-container" class="mt-4" aria-live="polite" style="min-height: 100px;">
+                    <div id="selected-ingredients-container" class="mt-4" aria-live="polite" style="min-height: 150px;">
                         <p class="text-muted text-center">Your ingredients will appear here.</p>
                     </div>
                      <div class="text-center mt-4">
-                        <button id="find-recipes-btn" class="btn btn-primary btn-lg w-100">Find Recipes</button>
+                        <button id="find-recipes-btn" class="btn btn-primary btn-lg w-100">Search</button>
                     </div>
+                </section>
+
+                <section id="pantry-results-section" class="d-none mt-5">
+                    <hr class="my-5">
+                    <h2 id="pantry-results-title" class="section-title mt-5">Recipes You Can Make</h2>
+                    <div id="loader" class="text-center d-none" role="status" aria-live="polite">
+                        <dotlottie-wc src="https://lottie.host/ecf07e07-eb9c-44d4-9c73-4c59c17036f7/NfVTHm1w94.lottie" style="width: 150px; margin: auto;" speed="1" autoplay loop></dotlottie-wc>
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div id="pantry-recipe-results" class="row g-4">
+                        </div>
                 </section>
             </div>
 
-            <!-- Right Column: Browse Ingredients -->
-            <div class="col-lg-6">
-                <section>
-                    <h2 class="section-title">Browse Ingredients</h2>
+            <div class="col-lg-4">
+                <section class="p-4 rounded-3 ingredient-browser-panel">
+                    <h2 class="section-title mb-4">Browse & Add</h2>
                     <div class="accordion" id="ingredientAccordion">
-                        <!-- Accordion items will be injected here by JavaScript -->
-                    </div>
+                        </div>
                 </section>
             </div>
         </div>
-
-        <!-- Recipe Results Section (appears below) -->
-        <section id="pantry-results-section" class="d-none mt-5">
-            <hr>
-            <h2 id="pantry-results-title" class="section-title mt-5">Suggested Recipes</h2>
-            <div id="loader" class="text-center d-none" role="status" aria-live="polite">
-                <dotlottie-wc src="https://lottie.host/ecf07e07-eb9c-44d4-9c73-4c59c17036f7/NfVTHm1w94.lottie" style="width: 150px; margin: auto;" speed="1" autoplay loop></dotlottie-wc>
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <div id="pantry-recipe-results" class="row g-4">
-                <!-- Recipe results will be injected here -->
-            </div>
-        </section>
     </main>
 
     <footer class="footer">
@@ -90,10 +84,8 @@
     </footer>
     
     <div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
-        <!-- Toasts will be injected here -->
-    </div>
+        </div>
     
-    <!-- Modal for recipe details -->
     <div class="modal fade" id="recipeModal" tabindex="-1" aria-labelledby="recipeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
@@ -102,8 +94,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="recipeModalBody">
-                    <!-- Recipe details will be injected here -->
-                </div>
+                    </div>
                 <div class="modal-footer">
                     <button type="button" id="favorite-btn" class="btn btn-warning d-none">Add to Favorites</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

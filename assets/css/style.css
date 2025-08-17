@@ -140,16 +140,23 @@ body.dark-mode .hero-section::before {
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
     overflow: hidden;
-    cursor: pointer;
 }
-.recipe-card:hover, .recipe-card:focus { 
+.recipe-card:hover, .recipe-card:focus-within { 
     transform: translateY(-5px); 
     box-shadow: var(--shadow-hover); 
-    outline: 2px solid var(--primary-color);
 }
 .recipe-card .card-body { padding: 1.5rem; }
 .recipe-card .card-title { font-family: var(--body-font); font-weight: 600; color: var(--heading-color); }
 .recipe-card .card-img-top { aspect-ratio: 4 / 3; object-fit: cover; }
+.recipe-card .recipe-title-link {
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--heading-color);
+}
+.recipe-card .recipe-title-link:hover {
+    color: var(--primary-color);
+}
+
 
 /* --- Modals --- */
 .modal-content { background-color: var(--background-color); border: none; border-radius: var(--border-radius); }
@@ -191,9 +198,13 @@ body.dark-mode .hero-section::before {
 #auth-container .dropdown-item:hover { background-color: var(--primary-color); color: white; }
 
 /* --- Pantry Page Specific Styles --- */
+.ingredient-browser-panel {
+    background-color: var(--subtle-color);
+}
+
 .ingredient-badge {
     cursor: pointer;
-    background-color: var(--subtle-color);
+    background-color: var(--card-background);
     color: var(--text-color);
     border: 1px solid var(--border-color);
     margin: 0.25rem;
@@ -204,7 +215,7 @@ body.dark-mode .hero-section::before {
     background-color: var(--primary-color);
     color: white;
     border-color: var(--primary-color);
-    outline: 2px solid var(--primary-hover-color);
+    transform: scale(1.05);
 }
 #selected-ingredients-container .badge {
     font-size: 1rem;
@@ -231,7 +242,7 @@ body.dark-mode .hero-section::before {
     box-shadow: none !important;
 }
 .accordion-header .accordion-button:not(.collapsed) {
-    background-color: var(--subtle-color);
+    background-color: color-mix(in srgb, var(--primary-color) 20%, transparent);
     color: var(--heading-color);
 }
 .accordion-button:focus {
@@ -242,11 +253,24 @@ body.dark-mode .hero-section::before {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%232c3e50'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708 .708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
 }
 body.dark-mode .accordion-button::after {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23e9ecef'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23e9ecef'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708 .708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
 }
 .accordion-body {
     padding: 0.5rem 1.25rem 1.25rem;
 }
+
+/* NEW: Styles for common ingredients preview */
+.accordion-item .common-ingredients {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 1.25rem 1rem;
+    transition: opacity 0.3s ease;
+}
+
+.accordion-button[aria-expanded="true"] + .common-ingredients {
+    display: none;
+}
+
 
 /* --- Footer --- */
 .footer {

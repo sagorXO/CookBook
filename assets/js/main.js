@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeTheme();
 
     // 2. Setup Global Event Listeners (for non-auth elements)
+    // This now handles the accessible recipe card clicks globally.
     setupEventListeners();
     handleAuth(); // Sets up listeners for login form, etc.
 

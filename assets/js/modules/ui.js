@@ -60,29 +60,37 @@ export function showToast(message, type = 'success') {
 
 /**
  * Displays recipes in a specified container.
- * @param {Array} meals - An array of meal objects to display.
+ * @param {Array|null} meals - An array of meal objects to display.
  * @param {string} containerId - The ID of the container element.
+ * @param {string|null} customEmptyMessage - A custom message to show when meals are empty.
  */
-export function displayRecipes(meals, containerId) {
+export function displayRecipes(meals, containerId, customEmptyMessage = null) {
     const containerEl = document.getElementById(containerId);
     if (!containerEl) return;
 
-    // **FIX: Inefficient DOM Manipulation**
-    // Build the entire HTML string first, then set innerHTML once.
-    let cardsHTML = '';
     if (!meals || meals.length === 0) {
-        containerEl.innerHTML = `<p class="text-center col-12">No recipes found. Try another search! 🧐</p>`;
+        // **IMPROVEMENT: Custom Empty State Message**
+        const message = customEmptyMessage || `
+            <h4 class="mt-3">No Recipes Found</h4>
+            <p class="text-muted">Try adjusting your search or ingredients!</p>`;
+        
+        containerEl.innerHTML = `
+            <div class="col-12 text-center">
+                <dotlottie-wc src="https://lottie.host/a68d33a8-8b74-4618-b0a1-9426f8309a69/4x0DpmDS44.lottie" style="width: 200px; margin: auto;" speed="1" autoplay loop></dotlottie-wc>
+                ${message}
+            </div>`;
         return;
     }
 
+    let cardsHTML = '';
     meals.forEach(meal => {
         cardsHTML += `
-            <div class="col-md-4 col-lg-3">
-                <div class="card recipe-card h-100" data-id="${meal.idMeal}" tabindex="0" role="button" aria-label="View recipe for ${meal.strMeal}">
+            <div class="col-md-4 col-lg-4">
+                <div class="card recipe-card h-100">
                     <img src="${meal.strMealThumb || 'https://via.placeholder.com/300x200.png?text=No+Image'}" class="card-img-top" alt="${meal.strMeal}">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">${meal.strMeal}</h5>
-                        <button class="btn btn-primary mt-auto" aria-hidden="true">View Recipe</button>
+                        <h5 class="card-title recipe-title-link" data-id="${meal.idMeal}" role="button" tabindex="0">${meal.strMeal}</h5>
+                        <button class="btn btn-primary mt-auto view-recipe-btn" data-id="${meal.idMeal}">View Recipe</button>
                     </div>
                 </div>
             </div>`;
@@ -121,8 +129,6 @@ async function displayModalContent(meal) {
     }
 
     ingredients.forEach(({ name, measure }) => {
-        // **FIX: Fragile Ingredient Matching**
-        // Use regex with word boundaries for a more accurate match.
         const isIngredientHaram = haramIngredients.some(term => new RegExp(`\\b${term}\\b`, 'i').test(name));
         if (isIngredientHaram) {
             isHaram = true;
@@ -163,7 +169,6 @@ async function displayModalContent(meal) {
  * @param {string} mealId - The ID of the meal to show.
  */
 export async function showRecipeDetails(mealId) {
-    // Check if it's a user recipe or a favorite from our optimized store
     const user = auth.currentUser;
     if (user) {
         const userData = await getUserData(user.uid);
@@ -175,7 +180,6 @@ export async function showRecipeDetails(mealId) {
         }
     }
     
-    // Fallback to API for public recipes
     const meals = await fetchAPI(`lookup.php?i=${mealId}`);
     if (meals) await displayModalContent(meals[0]);
 }
@@ -220,7 +224,6 @@ const getUserData = async (uid) => {
     if (docSnap.exists()) {
         return docSnap.data();
     } else {
-        // Create document for new user
         const newUserDoc = { favorites: [], userRecipes: [] };
         await setDoc(docRef, newUserDoc);
         return newUserDoc;
@@ -240,14 +243,10 @@ async function toggleFavorite() {
     const isFavorited = favorites.some(fav => fav.idMeal === currentRecipeId);
 
     if (isFavorited) {
-        // **FIX: Critical Performance Bottleneck**
-        // Remove the entire meal object instead of just the ID.
         const recipeToRemove = favorites.find(fav => fav.idMeal === currentRecipeId);
         await updateDoc(userDocRef, { favorites: arrayRemove(recipeToRemove) });
         showToast('💔 Recipe removed from favorites!', 'error');
     } else {
-        // **FIX: Critical Performance Bottleneck**
-        // Fetch and store the entire meal object.
         const meals = await fetchAPI(`lookup.php?i=${currentRecipeId}`);
         if (meals && meals[0]) {
             await updateDoc(userDocRef, { favorites: arrayUnion(meals[0]) });
@@ -268,16 +267,9 @@ export async function loadFavorites(uid) {
     const favSection = document.getElementById('favorites-section');
     if (!uid || !favSection) return;
 
-    // **FIX: Critical Performance Bottleneck**
-    // Now reads the full meal objects directly from Firestore, avoiding N+1 API calls.
     const userData = await getUserData(uid);
     const favs = userData.favorites || [];
-
-    if (favs.length === 0) {
-        favSection.classList.add('d-none');
-        return;
-    }
-
+    
     favSection.classList.remove('d-none');
     displayRecipes(favs, 'favorites-container');
 }
@@ -292,10 +284,7 @@ export async function loadUserRecipes(uid) {
 
     const userData = await getUserData(uid);
     const userRecipes = userData.userRecipes || [];
-    if (userRecipes.length === 0) {
-        myRecipesSection.classList.add('d-none');
-        return;
-    }
+
     myRecipesSection.classList.remove('d-none');
     displayRecipes(userRecipes, 'my-recipes-container');
 }
@@ -309,8 +298,6 @@ async function handleSaveRecipe(e) {
     const user = auth.currentUser;
     if (!user) return;
 
-    // **ENHANCEMENT: Dynamic Ingredient Inputs**
-    // Read from the new dynamic input fields.
     const ingredients = Array.from(document.querySelectorAll('.ingredient-item')).map(item => {
         const name = item.querySelector('input[name="ingredientName"]').value;
         const measure = item.querySelector('input[name="ingredientMeasure"]').value;
@@ -329,8 +316,8 @@ async function handleSaveRecipe(e) {
     await updateDoc(userDocRef, { userRecipes: arrayUnion(newRecipe) });
 
     e.target.reset();
-    document.getElementById('ingredients-list').innerHTML = ''; // Clear dynamic fields
-    addIngredientField(); // Add one back for the next time
+    document.getElementById('ingredients-list').innerHTML = '';
+    addIngredientField();
     const addRecipeModal = bootstrap.Modal.getInstance(document.getElementById('addRecipeModal'));
     addRecipeModal.hide();
     await loadUserRecipes(user.uid);
@@ -360,7 +347,6 @@ function addIngredientField() {
  */
 export function setupEventListeners() {
     document.addEventListener('click', async (e) => {
-        // Navbar links
         if (e.target.matches('.nav-link[data-query]')) {
             e.preventDefault();
             const { type, query } = e.target.dataset;
@@ -370,24 +356,20 @@ export function setupEventListeners() {
             applyFiltersAndDisplay();
         }
 
-        // View Recipe Button on Cards
-        const recipeCard = e.target.closest('.recipe-card');
-        if (recipeCard) {
-            await showRecipeDetails(recipeCard.dataset.id);
+        const recipeTarget = e.target.closest('.view-recipe-btn, .recipe-title-link');
+        if (recipeTarget) {
+            await showRecipeDetails(recipeTarget.dataset.id);
         }
 
-        // Auth buttons
         if (e.target.matches('#add-recipe-btn')) {
             const addRecipeModal = new bootstrap.Modal(document.getElementById('addRecipeModal'));
             addRecipeModal.show();
         }
 
-        // Modal buttons
         if (e.target.matches('#favorite-btn')) {
             await toggleFavorite();
         }
 
-        // Add/Remove ingredient fields in "Add Recipe" modal
         if (e.target.matches('#add-ingredient-field-btn')) {
             addIngredientField();
         }
@@ -396,14 +378,12 @@ export function setupEventListeners() {
         }
     });
 
-    // Keyboard accessibility for recipe cards
     document.addEventListener('keydown', async (e) => {
-        if (e.key === 'Enter' && e.target.matches('.recipe-card')) {
+        if (e.key === 'Enter' && e.target.matches('.recipe-title-link')) {
             await showRecipeDetails(e.target.dataset.id);
         }
     });
 
-    // Form submissions
     document.addEventListener('submit', (e) => {
         if (e.target.matches('#search-form')) {
             e.preventDefault();
@@ -417,7 +397,6 @@ export function setupEventListeners() {
         }
     });
 
-    // **ENHANCEMENT: Search Bar Clear Button**
     const searchInput = document.getElementById('search-input');
     const searchClearBtn = document.getElementById('search-clear-btn');
     if (searchInput && searchClearBtn) {
@@ -431,7 +410,6 @@ export function setupEventListeners() {
         });
     }
 
-    // **FEATURE: Advanced Filters**
     const filterControls = document.querySelector('#advanced-filters');
     if (filterControls) {
         filterControls.addEventListener('change', (e) => {
@@ -448,7 +426,6 @@ export function setupEventListeners() {
         });
     }
 
-    // Initialize the first ingredient field in the modal
     const addRecipeModalEl = document.getElementById('addRecipeModal');
     if (addRecipeModalEl) {
         addRecipeModalEl.addEventListener('shown.bs.modal', () => {
@@ -465,19 +442,12 @@ export function setupEventListeners() {
  */
 function applyFiltersAndDisplay() {
     let filteredMeals = [...allMeals];
-
-    // NOTE: TheMealDB API doesn't support these filters directly.
-    // This is a client-side approximation. For a real app, the backend would handle this.
     if (currentFilters.vegetarian) {
-        // This is a placeholder. A real implementation would need to check ingredients.
         filteredMeals = filteredMeals.filter(meal => meal.strCategory === 'Vegetarian' || meal.strCategory === 'Vegan');
     }
     if (currentFilters.vegan) {
         filteredMeals = filteredMeals.filter(meal => meal.strCategory === 'Vegan');
     }
-    // Gluten-Free and Time filters would require more detailed data than the API provides in its list view.
-
-    // Sorting
     if (currentFilters.sort === 'asc') {
         filteredMeals.sort((a, b) => a.strMeal.localeCompare(b.strMeal));
     } else if (currentFilters.sort === 'desc') {
@@ -503,7 +473,7 @@ const ingredientCategories = {
     "🌱 Dairy-Free & Meat Substitutes": ["coconut milk", "almond milk", "almond butter", "tofu", "vegan butter", "non-dairy milk", "coconut cream", "soy milk", "extra firm tofu", "silken tofu", "kala namak salt", "coconut butter", "egg replacer", "vegan mayonnaise", "cashew butter", "vegan parmesan"],
     "🧁 Baking": ["flour", "baking powder", "baking soda", "cornstarch", "yeast", "dark chocolate chips", "chocolate chips", "whole-wheat flour", "shredded coconut", "almond flour", "self-raising flour", "cornmeal", "pastry flour", "coconut flake", "coconut flour", "cream of tartar"],
     "🌾 Grains & Cereals": ["rolled oats", "white rice", "quinoa", "brown rice", "long-grain rice", "basmati", "quick-cooking oats", "cooked rice", "breakfast cereal", "risotto rice", "rice cereal", "couscous", "wild rice", "semolina", "jasmine rice", "polenta", "granola cereal", "bulgur"],
-    "🍝 Pasta": ["short-cut pasta", "spaghetti", "macaroni", "egg noodle", "spiral pasta", "lasagna", "linguine", "fettuccine", "orzo", "pasta shell", "bow-tie pasta", "tortellini", "noodle", "rice noodles", "rigatoni", "gnocchi", "angel hair pasta", "ramen noodles"],
+    "🍝 Pasta": ["short-cut pasta", "spaghetti", "macaroni", "egg noodle", "spiral pasta", "lasagna", "linguine", "fettuccine", "orzo", "pasta shell", "bow-tie pasta", "tortellini", "noodle", "rice noodles", "rigatoti", "gnocchi", "angel hair pasta", "ramen noodles"],
     "🍞 Bread & Salty Snacks": ["bread", "bread crumbs", "panko", "flour tortillas", "corn tortillas", "crackers", "baguette", "tortilla chips", "pita", "pretzels", "seasoned bread crumbs", "sourdough bread", "rustic italian bread", "popcorn", "croutons", "whole-wheat tortillas"],
     "🌭 Pre-Made Doughs & Wrappers": ["pie crust", "puff pastry", "pizza crust", "biscuit dough", "refrigerated crescent rolls", "phyllo", "dumpling wrapper", "graham cracker crust", "cookie dough", "sourdough starter", "rice paper", "egg roll wrapper", "cinnamon roll dough"],
     "🥜 Nuts & Seeds": ["pecan", "walnut", "almond", "sesame seed", "cashew", "pine nut", "pistachio", "peanut", "chia", "slivered almonds", "pumpkin seeds", "hazelnut", "poppy seed", "sunflower seeds", "flax", "chopped nuts", "macadamia", "roasted peanuts"],
@@ -533,9 +503,11 @@ export function createAccordion() {
     let index = 0;
     for (const category in ingredientCategories) {
         const categoryId = `category-${index}`;
-        const ingredients = ingredientCategories[category];
-
-        const badgesHTML = ingredients.map(ing => `<span class="badge ingredient-badge" role="button" tabindex="0">${ing}</span>`).join('');
+        const allIngredients = ingredientCategories[category];
+        
+        const commonIngredients = allIngredients.slice(0, 5);
+        const commonBadgesHTML = commonIngredients.map(ing => `<span class="badge ingredient-badge" role="button" tabindex="0">${ing}</span>`).join('');
+        const allBadgesHTML = allIngredients.map(ing => `<span class="badge ingredient-badge" role="button" tabindex="0">${ing}</span>`).join('');
 
         accordionHTML += `
             <div class="accordion-item">
@@ -544,9 +516,10 @@ export function createAccordion() {
                         ${category}
                     </button>
                 </h2>
+                <div class="common-ingredients">${commonBadgesHTML}</div>
                 <div id="collapse-${categoryId}" class="accordion-collapse collapse" aria-labelledby="heading-${categoryId}" data-bs-parent="#ingredientAccordion">
                     <div class="accordion-body d-flex flex-wrap">
-                        ${badgesHTML}
+                        ${allBadgesHTML}
                     </div>
                 </div>
             </div>`;
@@ -623,11 +596,47 @@ export function setupPantryEventListeners() {
             }
             const pantryResultsSection = document.getElementById('pantry-results-section');
             pantryResultsSection.classList.remove('d-none');
+            document.getElementById('pantry-recipe-results').innerHTML = '';
 
-            // **ENHANCEMENT: Cohesive Pantry Experience**
-            // Fetch and display results directly on the page.
-            const meals = await fetchRecipesByIngredients(selectedIngredients);
-            displayRecipes(meals, 'pantry-recipe-results');
+            const initialMeals = await fetchRecipesByIngredients(selectedIngredients);
+            const emptyMessage = `<h4>Sorry!</h4><p class="text-muted">You don't have enough items to make any recipes. Try adding more.</p>`;
+
+            if (!initialMeals || initialMeals.length === 0) {
+                displayRecipes(null, 'pantry-recipe-results', emptyMessage);
+                return;
+            }
+
+            const toggleSpinner = (show) => document.getElementById('loader').classList.toggle('d-none', !show);
+            toggleSpinner(true);
+
+            const recipeDetailPromises = initialMeals.map(meal => fetchAPI(`lookup.php?i=${meal.idMeal}`));
+            const detailedMealsData = await Promise.all(recipeDetailPromises);
+
+            const otherIngredients = selectedIngredients.slice(1).map(i => i.toLowerCase());
+            const finalMeals = [];
+
+            detailedMealsData.forEach(mealData => {
+                const meal = mealData ? mealData[0] : null;
+                if (!meal) return;
+
+                let recipeIngredientsStr = '';
+                for (let i = 1; i <= 20; i++) {
+                    const ingredient = meal[`strIngredient${i}`];
+                    if (ingredient) {
+                        recipeIngredientsStr += ` ${ingredient.toLowerCase()}`;
+                    } else {
+                        break;
+                    }
+                }
+
+                const hasAllIngredients = otherIngredients.every(ing => recipeIngredientsStr.includes(ing));
+                if (hasAllIngredients) {
+                    finalMeals.push(meal);
+                }
+            });
+
+            toggleSpinner(false);
+            displayRecipes(finalMeals, 'pantry-recipe-results', emptyMessage);
         });
     }
 

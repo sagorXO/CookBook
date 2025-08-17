@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FFFDF5">
+    <title>Cookbook</title>
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a id="home-link" class="navbar-brand" href="index.html">
+                <img src="assets/images/logo.png" alt="Cookbook Logo" width="40" class="me-2">
+                Cookbook
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="#" data-type="area" data-query="Indian">Indian</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-type="area" data-query="Italian">Italian</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-type="area" data-query="American">Western</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-type="category" data-query="Dessert">Dessert</a></li>
+                    <li class="nav-item"><a class="nav-link" href="pantry.html">Cooking Hacks</a></li>
+                </ul>
+                <div id="auth-container" class="d-flex align-items-center ms-lg-3">
+                    <!-- Auth UI will be injected here -->
+                </div>
+                <button id="theme-toggle-btn" class="btn bi bi-moon-stars-fill ms-3" aria-label="Switch to dark mode"></button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4">Find Your Next Favorite Meal</h1>
+            <p class="lead mb-4">Search thousands of recipes from around the world.</p>
+            <!-- ENHANCEMENT: Search bar with clear button -->
+            <form id="search-form" class="d-flex justify-content-center position-relative" role="search">
+                <label for="search-input" class="visually-hidden">Search for recipes</label>
+                <input id="search-input" type="search" class="form-control form-control-lg w-50" placeholder="Search for 'Chicken Curry'...">
+                <button id="search-clear-btn" type="button" class="btn-close position-absolute end-0 top-50 translate-middle-y me-3 d-none" aria-label="Clear search"></button>
+                <button type="submit" class="btn btn-primary btn-lg ms-2">Search</button>
+            </form>
+             <div class="mt-4">
+                 <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#advanced-filters" aria-expanded="false" aria-controls="advanced-filters">
+                    Advanced Filters <i class="bi bi-sliders" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        <div class="collapse" id="advanced-filters">
+            <div class="advanced-filters-body card card-body mb-4">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6>Dietary Restrictions (Approximate)</h6>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" value="Vegetarian" id="filter-vegetarian"><label class="form-check-label" for="filter-vegetarian">Vegetarian</label></div>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" value="Vegan" id="filter-vegan"><label class="form-check-label" for="filter-vegan">Vegan</label></div>
+                         <div class="form-check"><input class="form-check-input" type="checkbox" value="Gluten-Free" id="filter-gluten-free" disabled><label class="form-check-label" for="filter-gluten-free">Gluten-Free (API not supported)</label></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="filter-time" class="form-label">Max Cooking Time (API not supported)</label>
+                        <input type="range" class="form-range" min="15" max="120" step="15" id="filter-time" disabled>
+                        <span id="time-value">60 mins</span>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="filter-sort" class="form-label">Sort By</label>
+                        <select class="form-select" id="filter-sort">
+                            <option value="default" selected>Default</option>
+                            <option value="asc">Name (A-Z)</option>
+                            <option value="desc">Name (Z-A)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="loader" class="text-center d-none" role="status" aria-live="polite">
+            <dotlottie-wc src="https://lottie.host/ecf07e07-eb9c-44d4-9c73-4c59c17036f7/NfVTHm1w94.lottie" style="width: 150px; margin: auto;" speed="1" autoplay loop></dotlottie-wc>
+            <span class="visually-hidden">Loading...</span>
+        </div>
+
+        <div id="user-sections">
+            <!-- User-specific sections (Favorites, My Recipes) will be injected here -->
+        </div>
+
+        <h2 id="results-title" class="section-title">🔥 Trending</h2>
+        <div id="recipe-results" class="row g-4"></div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Cookbook. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- ENHANCEMENT: Toast Container for notifications -->
+    <div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+        <!-- Toasts will be injected here -->
+    </div>
+
+    <!-- Modals -->
+    <div id="modals-container">
+        <div class="modal fade" id="recipeModal" tabindex="-1" aria-labelledby="recipeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="recipeModalLabel">Recipe Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="recipeModalBody">
+                        <!-- Recipe details will be injected here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="favorite-btn" class="btn btn-warning d-none">Add to Favorites</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addRecipeModal" tabindex="-1" aria-labelledby="addRecipeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form id="add-recipe-form">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addRecipeModalLabel">Add Your Own Recipe</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="recipe-title" class="form-label">Recipe Title</label>
+                                <input type="text" class="form-control" id="recipe-title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="recipe-image-url" class="form-label">Image URL</label>
+                                <input type="url" class="form-control" id="recipe-image-url" placeholder="https://example.com/image.jpg">
+                            </div>
+                            <!-- ENHANCEMENT: Dynamic ingredient inputs -->
+                            <div class="mb-3">
+                                <label class="form-label">Ingredients</label>
+                                <div id="ingredients-list">
+                                    <!-- Dynamic fields will be added here -->
+                                </div>
+                                <button type="button" id="add-ingredient-field-btn" class="btn btn-outline-secondary btn-sm mt-2">Add Ingredient</button>
+                            </div>
+                            <div class="mb-3">
+                                <label for="recipe-instructions" class="form-label">Instructions</label>
+                                <textarea class="form-control" id="recipe-instructions" rows="5" required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Recipe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="d-grid gap-2">
+                            <button id="google-signin-btn" class="btn btn-light border">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-google me-2" viewBox="0 0 16 16"><path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.25C2.806 7.655 2.5 8.522 2.5 9.5s.306 1.845.834 2.583C3.983 13.92 5.844 15 8 15c1.469 0 2.718-.571 3.636-1.491l2.284 2.284A7.96 7.96 0 0 1 8 16Z"/></svg>
+                                Continue with Google
+                            </button>
+                            <button id="facebook-signin-btn" class="btn btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook me-2" viewBox="0 0 16 16"><path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0 0 3.603 0 8.049c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/></svg>
+                                Continue with Facebook
+                            </button>
+                        </div>
+                        <div class="text-center my-3">OR</div>
+                        <form id="login-form">
+                            <div class="mb-3">
+                                <label for="login-email" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="login-email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="login-password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="login-password" name="password" required>
+                            </div>
+                            <div id="auth-error" class="text-danger mb-3"></div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
+                            <div class="text-center mt-3">
+                                <a href="#" id="auth-toggle-link">Need an account? Sign up</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/main.js" type="module"></script>
+</body>
+</html>

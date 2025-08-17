@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FFFDF5">
+    <title>Cook Hacks - Cookbook</title>
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/images/logo.png" alt="Cookbook Logo" width="40">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                </ul>
+                <button id="theme-toggle-btn" class="btn bi bi-moon-stars-fill ms-3" aria-label="Switch to dark mode"></button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4">Cook Hacks</h1>
+            <p class="lead mb-4">Add the ingredients you have, and we'll find recipes for you!</p>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        <!-- REFINEMENT: Reverted to a single-column layout -->
+        <section class="mb-5 p-4 rounded-3" style="background-color: var(--card-background); box-shadow: var(--shadow);">
+            <h3 class="mb-3">Your Ingredients</h3>
+            <form id="add-ingredient-form" class="d-flex align-items-center">
+                <label for="ingredient-input" class="visually-hidden">Add an ingredient</label>
+                <input id="ingredient-input" type="text" class="form-control form-control-lg me-2" placeholder="e.g., Chicken, Onion, Garlic...">
+                <button type="submit" class="btn btn-primary btn-lg">Add</button>
+            </form>
+            <div id="selected-ingredients-container" class="mt-4" aria-live="polite">
+                <p class="text-muted text-center">Your ingredients will appear here.</p>
+            </div>
+             <div class="text-center mt-4">
+                <button id="find-recipes-btn" class="btn btn-primary btn-lg w-50">Find Recipes</button>
+            </div>
+        </section>
+
+        <section id="pantry-results-section" class="d-none">
+            <hr class="my-5">
+            <!-- REFINEMENT: Changed title to manage user expectations about API results -->
+            <h2 id="pantry-results-title" class="section-title">Recipes Featuring Your Main Ingredient</h2>
+            <div id="loader" class="text-center d-none" role="status" aria-live="polite">
+                <dotlottie-wc src="https://lottie.host/ecf07e07-eb9c-44d4-9c73-4c59c17036f7/NfVTHm1w94.lottie" style="width: 150px; margin: auto;" speed="1" autoplay loop></dotlottie-wc>
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div id="pantry-recipe-results" class="row g-4">
+                <!-- Recipe results will be injected here -->
+            </div>
+        </section>
+
+        <section class="mt-5">
+            <h2 class="section-title">Browse Common Ingredients</h2>
+            <p class="text-center text-muted mb-4">The API works best when you search with one primary ingredient.</p>
+            <div class="accordion" id="ingredientAccordion">
+                <!-- Accordion items will be injected here by JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Cookbook. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+        <!-- Toasts will be injected here -->
+    </div>
+    
+    <!-- Modal for recipe details -->
+    <div class="modal fade" id="recipeModal" tabindex="-1" aria-labelledby="recipeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="recipeModalLabel">Recipe Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="recipeModalBody">
+                    <!-- Recipe details will be injected here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="favorite-btn" class="btn btn-warning d-none">Add to Favorites</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/pantry.js" type="module"></script>
+</body>
+</html>

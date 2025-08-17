@@ -1,0 +1,272 @@
+/* --- Google Font Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Montserrat:wght@400;500;600&display=swap');
+
+/* --- Modern Color & Style Variables --- */
+:root {
+    --primary-color: #FF9B00; /* Vibrant Orange */
+    --primary-hover-color: #FFC900; /* Golden Yellow */
+    --background-color: #FFFDF5; /* Warm Off-White */
+    --card-background: #FFFFFF;
+    --text-color: #2c3e50;
+    --heading-color: #1a252f;
+    --subtle-color: #EBE389; /* Muted Yellow/Beige */
+    --border-color: #dee2e6;
+    --body-font: 'Montserrat', sans-serif;
+    --heading-font: 'Lora', serif;
+    --border-radius: 12px;
+    --shadow: 0 4px 6px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-hover: 0 10px 15px rgba(0,0,0,0.05), 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* --- Dark Mode Color Variables --- */
+body.dark-mode {
+    --primary-color: #FF9B00;
+    --primary-hover-color: #FFC900;
+    --background-color: #1a252f;
+    --card-background: #2c3e50;
+    --text-color: #e9ecef;
+    --heading-color: #FFFFFF;
+    --subtle-color: #34495e;
+    --border-color: #495057;
+}
+
+/* --- General Body & Typography --- */
+body {
+    background-color: var(--background-color);
+    font-family: var(--body-font);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, .navbar-brand, .modal-title {
+    font-family: var(--heading-font);
+    color: var(--heading-color);
+}
+
+/* --- Navbar --- */
+.navbar {
+    /* REFINEMENT: Glass effect with transparency and blur */
+    background-color: rgba(255, 253, 245, 0.7); /* --background-color with alpha */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* For Safari */
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.3s ease;
+}
+
+body.dark-mode .navbar {
+    /* REFINEMENT: Glass effect for dark mode */
+    background-color: rgba(26, 37, 47, 0.7); /* --background-color (dark) with alpha */
+}
+
+/* REFINEMENT: Shorter navbar by reducing vertical padding */
+.navbar .container {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
+.navbar-brand { font-size: 1.75rem; }
+.nav-link { font-weight: 500; color: var(--text-color); }
+#theme-toggle-btn { cursor: pointer; font-size: 1.25rem; color: var(--text-color); }
+
+/* --- Hero Section --- */
+.hero-section {
+    position: relative;
+    background-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2874&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    padding: 8rem 0;
+    color: #fff;
+    -webkit-mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
+    margin-bottom: -6rem; /* Pull the content below up */
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6));
+    transition: background-color 0.3s ease;
+}
+
+body.dark-mode .hero-section::before {
+    background: linear-gradient(rgba(26, 37, 47, 0.2), rgba(26, 37, 47, 0.8));
+}
+
+.hero-section .container { position: relative; z-index: 2; }
+.hero-section .display-4, .hero-section .lead {
+    color: #FFFFFF;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+/* --- Forms & Buttons --- */
+#search-form .form-control {
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    background-color: var(--card-background);
+    color: var(--text-color);
+}
+#search-form .form-control:focus {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 25%, transparent);
+    border-color: var(--primary-color);
+}
+#search-form .form-control::placeholder {
+    color: var(--text-color);
+    opacity: 0.6;
+}
+
+#search-form .btn-close {
+    right: 110px; 
+}
+
+.btn {
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.2s ease-in-out;
+}
+.btn-primary { background-color: var(--primary-color); border-color: var(--primary-color); }
+.btn-primary:hover { background-color: var(--primary-hover-color); border-color: var(--primary-hover-color); transform: translateY(-2px); }
+.btn-secondary { background-color: var(--card-background); border-color: var(--border-color); color: var(--text-color); }
+.btn-secondary:hover { background-color: #f8f9fa; border-color: var(--border-color); transform: translateY(-2px); }
+
+/* --- UI Sections & Cards --- */
+.section-title { text-align: center; margin-bottom: 3rem; }
+.recipe-card {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    cursor: pointer;
+}
+.recipe-card:hover, .recipe-card:focus { 
+    transform: translateY(-5px); 
+    box-shadow: var(--shadow-hover); 
+    outline: 2px solid var(--primary-color);
+}
+.recipe-card .card-body { padding: 1.5rem; }
+.recipe-card .card-title { font-family: var(--body-font); font-weight: 600; color: var(--heading-color); }
+.recipe-card .card-img-top { aspect-ratio: 4 / 3; object-fit: cover; }
+
+/* --- Modals --- */
+.modal-content { background-color: var(--background-color); border: none; border-radius: var(--border-radius); }
+.modal-header, .modal-footer { border-color: var(--border-color); }
+.halal-status { font-weight: bold; padding: 4px 10px; border-radius: 5px; color: white; font-size: 0.9rem;}
+.halal { background-color: #27ae60; }
+.haram { background-color: #c0392b; }
+.haram-ingredient {
+    background-color: #e74c3c;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: help;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+}
+.substitute-suggestion {
+    display: block;
+    background-color: var(--subtle-color);
+    border-left: 4px solid var(--primary-color);
+    padding: 8px 12px;
+    margin-top: 5px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+/* --- Advanced Filters --- */
+.advanced-filters-body {
+    background-color: var(--subtle-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-top: -1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* --- Auth Dropdown in Navbar --- */
+#auth-container .dropdown-menu { background-color: var(--card-background); }
+#auth-container .dropdown-item { color: var(--text-color); }
+#auth-container .dropdown-item:hover { background-color: var(--primary-color); color: white; }
+
+/* --- Pantry Page Specific Styles --- */
+.ingredient-badge {
+    cursor: pointer;
+    background-color: var(--subtle-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    margin: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.2s ease;
+}
+.ingredient-badge:hover, .ingredient-badge:focus {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    outline: 2px solid var(--primary-hover-color);
+}
+#selected-ingredients-container .badge {
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+}
+#selected-ingredients-container .btn-close {
+    margin-left: 0.5rem;
+}
+
+/* --- Custom Accordion for Pantry Page --- */
+.accordion-item {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    margin-bottom: 0.5rem;
+    border-radius: var(--border-radius) !important;
+    overflow: hidden;
+}
+.accordion-header .accordion-button {
+    background-color: transparent;
+    color: var(--heading-color);
+    font-family: var(--body-font);
+    font-weight: 600;
+    border-radius: var(--border-radius);
+    box-shadow: none !important;
+}
+.accordion-header .accordion-button:not(.collapsed) {
+    background-color: var(--subtle-color);
+    color: var(--heading-color);
+}
+.accordion-button:focus {
+    border-color: transparent;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 25%, transparent);
+}
+.accordion-button::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%232c3e50'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708 .708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+body.dark-mode .accordion-button::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23e9ecef'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+.accordion-body {
+    padding: 0.5rem 1.25rem 1.25rem;
+}
+
+/* --- Footer --- */
+.footer {
+    background-color: var(--subtle-color);
+    color: var(--text-color);
+    padding: 2rem 0;
+    text-align: center;
+    margin-top: 4rem;
+    border-top: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+/* --- Toast Notifications --- */
+/* Ensure toast is always on top */
+#toast-container {
+    z-index: 1100;
+}
+.toast.bg-success {
+    background-color: var(--primary-color) !important;
+}
+.toast.bg-danger {
+    background-color: #c0392b !important;
+}

@@ -45,20 +45,17 @@ h1, h2, h3, .navbar-brand, .modal-title {
 
 /* --- Navbar --- */
 .navbar {
-    /* REFINEMENT: Glass effect with transparency and blur */
-    background-color: rgba(255, 253, 245, 0.7); /* --background-color with alpha */
+    background-color: rgba(255, 253, 245, 0.7);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* For Safari */
+    -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-color);
     transition: background-color 0.3s ease;
 }
 
 body.dark-mode .navbar {
-    /* REFINEMENT: Glass effect for dark mode */
-    background-color: rgba(26, 37, 47, 0.7); /* --background-color (dark) with alpha */
+    background-color: rgba(26, 37, 47, 0.7);
 }
 
-/* REFINEMENT: Shorter navbar by reducing vertical padding */
 .navbar .container {
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
@@ -78,7 +75,7 @@ body.dark-mode .navbar {
     color: #fff;
     -webkit-mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
     mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
-    margin-bottom: -6rem; /* Pull the content below up */
+    margin-bottom: -6rem;
 }
 
 .hero-section::before {
@@ -183,15 +180,6 @@ body.dark-mode .hero-section::before {
     font-size: 0.9rem;
 }
 
-/* --- Advanced Filters --- */
-.advanced-filters-body {
-    background-color: var(--subtle-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    margin-top: -1.5rem;
-    margin-bottom: 2rem;
-}
-
 /* --- Auth Dropdown in Navbar --- */
 #auth-container .dropdown-menu { background-color: var(--card-background); }
 #auth-container .dropdown-item { color: var(--text-color); }
@@ -259,7 +247,6 @@ body.dark-mode .accordion-button::after {
     padding: 0.5rem 1.25rem 1.25rem;
 }
 
-/* NEW: Styles for common ingredients preview */
 .accordion-item .common-ingredients {
     display: flex;
     flex-wrap: wrap;
@@ -269,6 +256,32 @@ body.dark-mode .accordion-button::after {
 
 .accordion-button[aria-expanded="true"] + .common-ingredients {
     display: none;
+}
+
+/* **NEW: Recipe Card Banners** */
+.missing-ingredients-banner {
+    background-color: #fff3cd;
+    color: #664d03;
+    padding: 0.75rem 1.25rem;
+}
+.perfect-match-banner {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    padding: 0.75rem 1.25rem;
+}
+.missing-ingredients-banner ul {
+    margin: 0.5rem 0 0 1rem;
+    padding: 0;
+    font-size: 0.85rem;
+}
+
+body.dark-mode .missing-ingredients-banner {
+    background-color: #664d03;
+    color: #ffecb5;
+}
+body.dark-mode .perfect-match-banner {
+    background-color: #0f5132;
+    color: #a3cfbb;
 }
 
 
@@ -284,7 +297,6 @@ body.dark-mode .accordion-button::after {
 }
 
 /* --- Toast Notifications --- */
-/* Ensure toast is always on top */
 #toast-container {
     z-index: 1100;
 }

@@ -69,7 +69,6 @@ export function displayRecipes(meals, containerId, customEmptyMessage = null) {
     if (!containerEl) return;
 
     if (!meals || meals.length === 0) {
-        // **IMPROVEMENT: Custom Empty State Message**
         const message = customEmptyMessage || `
             <h4 class="mt-3">No Recipes Found</h4>
             <p class="text-muted">Try adjusting your search or ingredients!</p>`;
@@ -83,11 +82,30 @@ export function displayRecipes(meals, containerId, customEmptyMessage = null) {
     }
 
     let cardsHTML = '';
+    // **NEW LOGIC: Each meal object can now have a `missingIngredients` property**
     meals.forEach(meal => {
+        let missingIngredientsHTML = '';
+        if (meal.missingIngredients && meal.missingIngredients.length > 0) {
+            const items = meal.missingIngredients.map(item => `<li>${item}</li>`).join('');
+            missingIngredientsHTML = `
+                <div class="missing-ingredients-banner">
+                    <small>You're missing ${meal.missingIngredients.length} ingredient(s):</small>
+                    <ul>${items}</ul>
+                </div>
+            `;
+        } else {
+             missingIngredientsHTML = `
+                <div class="perfect-match-banner">
+                    <small>✅ You have all the ingredients!</small>
+                </div>
+            `;
+        }
+
         cardsHTML += `
             <div class="col-md-4 col-lg-4">
                 <div class="card recipe-card h-100">
                     <img src="${meal.strMealThumb || 'https://via.placeholder.com/300x200.png?text=No+Image'}" class="card-img-top" alt="${meal.strMeal}">
+                    ${missingIngredientsHTML}
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title recipe-title-link" data-id="${meal.idMeal}" role="button" tabindex="0">${meal.strMeal}</h5>
                         <button class="btn btn-primary mt-auto view-recipe-btn" data-id="${meal.idMeal}">View Recipe</button>
@@ -591,52 +609,73 @@ export function setupPantryEventListeners() {
     if (findRecipesBtn) {
         findRecipesBtn.addEventListener('click', async () => {
             if (selectedIngredients.length === 0) {
-                showToast("Please add some ingredients first!", "error");
+                showToast("Please add at least one main ingredient!", "error");
                 return;
             }
             const pantryResultsSection = document.getElementById('pantry-results-section');
             pantryResultsSection.classList.remove('d-none');
             document.getElementById('pantry-recipe-results').innerHTML = '';
 
-            const initialMeals = await fetchRecipesByIngredients(selectedIngredients);
-            const emptyMessage = `<h4>Sorry!</h4><p class="text-muted">You don't have enough items to make any recipes. Try adding more.</p>`;
+            const toggleSpinner = (show) => document.getElementById('loader').classList.toggle('d-none', !show);
+            toggleSpinner(true);
+            
+            // **IMPROVED LOGIC: Fetch candidates for ALL ingredients**
+            const recipeListPromises = selectedIngredients.map(ingredient => fetchAPI(`filter.php?i=${ingredient}`));
+            const recipeLists = await Promise.all(recipeListPromises);
 
-            if (!initialMeals || initialMeals.length === 0) {
+            const mealMap = new Map();
+            recipeLists.forEach(list => {
+                if (list) {
+                    list.forEach(meal => mealMap.set(meal.idMeal, meal));
+                }
+            });
+            const initialMeals = Array.from(mealMap.values());
+            const emptyMessage = `<h4>Sorry!</h4><p class="text-muted">No recipes found that closely match your ingredients. Try adding more!</p>`;
+
+            if (initialMeals.length === 0) {
+                toggleSpinner(false);
                 displayRecipes(null, 'pantry-recipe-results', emptyMessage);
                 return;
             }
-
-            const toggleSpinner = (show) => document.getElementById('loader').classList.toggle('d-none', !show);
-            toggleSpinner(true);
-
+            
+            const assumedIngredients = ['salt', 'pepper', 'water'];
+            const userHasIngredients = new Set([...selectedIngredients.map(i => i.toLowerCase()), ...assumedIngredients]);
+            
             const recipeDetailPromises = initialMeals.map(meal => fetchAPI(`lookup.php?i=${meal.idMeal}`));
             const detailedMealsData = await Promise.all(recipeDetailPromises);
 
-            const otherIngredients = selectedIngredients.slice(1).map(i => i.toLowerCase());
-            const finalMeals = [];
+            let matchedMeals = [];
+            const missingThreshold = 2; // Show recipes missing up to 2 ingredients
 
             detailedMealsData.forEach(mealData => {
                 const meal = mealData ? mealData[0] : null;
                 if (!meal) return;
 
-                let recipeIngredientsStr = '';
+                const missingIngredients = [];
                 for (let i = 1; i <= 20; i++) {
                     const ingredient = meal[`strIngredient${i}`];
-                    if (ingredient) {
-                        recipeIngredientsStr += ` ${ingredient.toLowerCase()}`;
+                    if (ingredient && ingredient.trim() !== '') {
+                        const recipeIng = ingredient.toLowerCase();
+                        const hasIngredient = [...userHasIngredients].some(userIng => recipeIng.includes(userIng));
+                        if (!hasIngredient) {
+                            missingIngredients.push(ingredient);
+                        }
                     } else {
                         break;
                     }
                 }
 
-                const hasAllIngredients = otherIngredients.every(ing => recipeIngredientsStr.includes(ing));
-                if (hasAllIngredients) {
-                    finalMeals.push(meal);
+                if (missingIngredients.length <= missingThreshold) {
+                    meal.missingIngredients = missingIngredients; // Attach missing ingredients to the meal object
+                    matchedMeals.push(meal);
                 }
             });
 
+            // Sort results: perfect matches first, then by number of missing ingredients
+            matchedMeals.sort((a, b) => a.missingIngredients.length - b.missingIngredients.length);
+
             toggleSpinner(false);
-            displayRecipes(finalMeals, 'pantry-recipe-results', emptyMessage);
+            displayRecipes(matchedMeals, 'pantry-recipe-results', emptyMessage);
         });
     }
 

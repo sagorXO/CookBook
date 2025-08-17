@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="assets/images/logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
 </head>
@@ -17,8 +17,7 @@
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a id="home-link" class="navbar-brand" href="index.html">
-                <img src="assets/images/logo.png" alt="Cookbook Logo" width="40" class="me-2">
-                Cookbook
+                <img src="assets/images/logo.png" alt="Cookbook Logo" width="40">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -43,47 +42,18 @@
         <div class="container">
             <h1 class="display-4">Find Your Next Favorite Meal</h1>
             <p class="lead mb-4">Search thousands of recipes from around the world.</p>
-            <!-- ENHANCEMENT: Search bar with clear button -->
             <form id="search-form" class="d-flex justify-content-center position-relative" role="search">
                 <label for="search-input" class="visually-hidden">Search for recipes</label>
                 <input id="search-input" type="search" class="form-control form-control-lg w-50" placeholder="Search for 'Chicken Curry'...">
                 <button id="search-clear-btn" type="button" class="btn-close position-absolute end-0 top-50 translate-middle-y me-3 d-none" aria-label="Clear search"></button>
                 <button type="submit" class="btn btn-primary btn-lg ms-2">Search</button>
             </form>
-             <div class="mt-4">
-                 <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#advanced-filters" aria-expanded="false" aria-controls="advanced-filters">
-                    Advanced Filters <i class="bi bi-sliders" aria-hidden="true"></i>
-                </button>
-            </div>
+            <!-- REFINEMENT: Removed the Advanced Filters button -->
         </div>
     </header>
 
     <main class="container my-5">
-        <div class="collapse" id="advanced-filters">
-            <div class="advanced-filters-body card card-body mb-4">
-                <div class="row">
-                    <div class="col-md-4">
-                        <h6>Dietary Restrictions (Approximate)</h6>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" value="Vegetarian" id="filter-vegetarian"><label class="form-check-label" for="filter-vegetarian">Vegetarian</label></div>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" value="Vegan" id="filter-vegan"><label class="form-check-label" for="filter-vegan">Vegan</label></div>
-                         <div class="form-check"><input class="form-check-input" type="checkbox" value="Gluten-Free" id="filter-gluten-free" disabled><label class="form-check-label" for="filter-gluten-free">Gluten-Free (API not supported)</label></div>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="filter-time" class="form-label">Max Cooking Time (API not supported)</label>
-                        <input type="range" class="form-range" min="15" max="120" step="15" id="filter-time" disabled>
-                        <span id="time-value">60 mins</span>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="filter-sort" class="form-label">Sort By</label>
-                        <select class="form-select" id="filter-sort">
-                            <option value="default" selected>Default</option>
-                            <option value="asc">Name (A-Z)</option>
-                            <option value="desc">Name (Z-A)</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- REFINEMENT: Removed the Advanced Filters section -->
 
         <div id="loader" class="text-center d-none" role="status" aria-live="polite">
             <dotlottie-wc src="https://lottie.host/ecf07e07-eb9c-44d4-9c73-4c59c17036f7/NfVTHm1w94.lottie" style="width: 150px; margin: auto;" speed="1" autoplay loop></dotlottie-wc>
@@ -104,7 +74,6 @@
         </div>
     </footer>
     
-    <!-- ENHANCEMENT: Toast Container for notifications -->
     <div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
         <!-- Toasts will be injected here -->
     </div>
@@ -146,7 +115,6 @@
                                 <label for="recipe-image-url" class="form-label">Image URL</label>
                                 <input type="url" class="form-control" id="recipe-image-url" placeholder="https://example.com/image.jpg">
                             </div>
-                            <!-- ENHANCEMENT: Dynamic ingredient inputs -->
                             <div class="mb-3">
                                 <label class="form-label">Ingredients</label>
                                 <div id="ingredients-list">
